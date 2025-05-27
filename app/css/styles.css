@@ -186,63 +186,80 @@ body {
     background-color: #000000;
 }
 
-/* 单词墙样式 - 标签云布局 */
+/* 单词墙样式 - 词云布局 */
 .word-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    gap: 2px; /* 非常小的间距 */
-    padding: 10px;
+    position: relative; /* 改为相对定位 */
     width: 100%;
     height: 100%;
     background-color: #000000; /* 纯黑背景 */
     overflow: hidden;
+    padding: 0; /* 移除内边距，让单词可以靠近边缘 */
 }
 
 /* 单词样式 */
 .word-card {
-    position: relative;
+    position: absolute; /* 改为绝对定位，使单词可以放置在任何位置 */
     display: inline-block;
-    margin: 2px; /* 极小的外边距 */
     padding: 2px 4px;
     color: var(--word-color-1); /* 默认白色文字 */
     font-weight: 500;
     text-align: center;
     cursor: pointer;
     user-select: none;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.3s ease-in-out; /* 平滑过渡效果 */
     background: none; /* 无背景 */
     border: none; /* 无边框 */
     box-shadow: none; /* 无阴影 */
     border-radius: 0; /* 无圆角 */
     opacity: 1;
+    transform-origin: center center;
+    /* 添加初始动画 */
+    animation: wordAppear 0.5s ease-out forwards;
+    white-space: nowrap; /* 防止单词换行 */
+    /* 添加阴影，提高可读性 */
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+    /* 确保单词不会超出可视区域 */
+    max-width: 100%;
+    overflow: visible;
+    z-index: 1; /* 基础层级，保证hover时可以提升 */
+    line-height: 1.1; /* 减小行高，使单词更紧凑 */
+    /* 确保单词在容器内 */
+    will-change: transform; /* 优化变换性能 */
 }
 
 .word-card:hover {
-    transform: scale(1.2);
-    z-index: 10;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+    transform: translate(-50%, -50%) scale(1.3) !important;
+    z-index: 100;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+    /* 添加立体效果 */
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
 }
 
 /* 已掌握单词的样式 */
 .word-card.mastered {
     opacity: 0.3;
     text-decoration: line-through;
+    transform: translate(-50%, -50%) scale(0.8) !important;
+    filter: brightness(0.5);
 }
 
 .word-card.mastered:hover {
     opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1) !important;
+    filter: brightness(0.8);
 }
 
 /* 单词大小变化类 */
-.word-size-1 { font-size: 0.9rem; }
-.word-size-2 { font-size: 1.1rem; }
-.word-size-3 { font-size: 1.3rem; }
-.word-size-4 { font-size: 1.5rem; }
-.word-size-5 { font-size: 1.7rem; }
-.word-size-6 { font-size: 1.9rem; }
+.word-size-1 { font-size: 1.0rem; }
+.word-size-2 { font-size: 1.25rem; }
+.word-size-3 { font-size: 1.5rem; }
+.word-size-4 { font-size: 1.75rem; }
+.word-size-5 { font-size: 2.0rem; }
+.word-size-6 { font-size: 2.25rem; }
+.word-size-7 { font-size: 2.5rem; }
+.word-size-8 { font-size: 2.75rem; }
+.word-size-9 { font-size: 3.0rem; }
+.word-size-10 { font-size: 3.25rem; }
 
 /* 单词颜色变化类 */
 .word-color-1 { color: var(--word-color-1); }
@@ -561,4 +578,140 @@ footer {
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* 单词出现动画 */
+@keyframes wordAppear {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    50% {
+        opacity: 0.7;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* 重排动画效果 */
+.word-container.rearranging .word-card {
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+    animation: none;
+}
+
+/* 浮动按钮组 */
+.floating-buttons {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 1000;
+}
+
+/* 操作按钮通用样式 */
+.action-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    border: none;
+    /* 添加呼吸效果 */
+    animation: pulseEffect 2s infinite ease-in-out;
+}
+
+.action-button:hover {
+    background-color: rgba(13, 110, 253, 0.9);
+    transform: scale(1.1);
+    animation: none; /* 悬停时停止呼吸动画 */
+}
+
+.action-button i {
+    font-size: 24px;
+}
+
+/* 重置按钮特殊样式 */
+.reset-button {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.reset-button:hover {
+    background-color: rgba(220, 53, 69, 0.9); /* 红色调，表示重置操作 */
+}
+
+/* 重排按钮样式保持不变，但移除位置相关属性 */
+.rearrange-button {
+    /* 移除了position, bottom, right属性，由floating-buttons控制位置 */
+}
+
+/* 按钮呼吸动画 */
+@keyframes pulseEffect {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* 单词掌握动画 */
+@keyframes wordMastered {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(0deg) scale(1);
+        text-decoration: none;
+        filter: brightness(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: translate(-50%, -50%) rotate(180deg) scale(0.9);
+        text-decoration: line-through;
+        filter: brightness(0.7);
+    }
+    100% {
+        opacity: 0.3;
+        transform: translate(-50%, -50%) rotate(360deg) scale(0.8);
+        text-decoration: line-through;
+        filter: brightness(0.5);
+    }
+}
+
+/* 单词取消掌握动画 */
+@keyframes wordUnmastered {
+    0% {
+        opacity: 0.3;
+        transform: translate(-50%, -50%) scale(0.8);
+        text-decoration: line-through;
+        filter: brightness(0.5);
+    }
+    50% {
+        opacity: 0.7;
+        transform: translate(-50%, -50%) scale(1.1);
+        text-decoration: none;
+        filter: brightness(1.2);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        text-decoration: none;
+        filter: brightness(1);
+    }
+}
+
+/* 单词掌握动画类 */
+.word-card.mastering {
+    animation: wordMastered 0.8s forwards;
+}
+
+/* 单词取消掌握动画类 */
+.word-card.unmastering {
+    animation: wordUnmastered 0.8s forwards;
 } 

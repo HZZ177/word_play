@@ -319,6 +319,50 @@ function showAlert(message, type = 'info') {
 }
 
 /**
+ * 显示自定义确认弹窗
+ * @param {string} message - 确认消息内容
+ * @param {string} title - 弹窗标题
+ * @param {Function} onConfirm - 确认按钮点击回调函数
+ * @param {Function} onCancel - 取消按钮点击回调函数（可选）
+ */
+function showConfirm(message, title = '确认操作', onConfirm, onCancel) {
+    // 获取模态框元素
+    const modalElement = document.getElementById('confirmModal');
+    const modal = new bootstrap.Modal(modalElement);
+    
+    // 设置标题和消息
+    document.getElementById('confirmModalLabel').textContent = title;
+    document.getElementById('confirmModalBody').textContent = message;
+    
+    // 获取确认按钮
+    const confirmButton = document.getElementById('confirmModalConfirmBtn');
+    
+    // 移除之前的事件监听器
+    const newConfirmButton = confirmButton.cloneNode(true);
+    confirmButton.parentNode.replaceChild(newConfirmButton, confirmButton);
+    
+    // 添加确认按钮点击事件
+    newConfirmButton.addEventListener('click', () => {
+        modal.hide();
+        if (typeof onConfirm === 'function') {
+            onConfirm();
+        }
+    });
+    
+    // 添加取消按钮和关闭事件
+    modalElement.addEventListener('hidden.bs.modal', () => {
+        if (typeof onCancel === 'function' && !modalElement.confirmClicked) {
+            onCancel();
+        }
+        // 重置状态
+        modalElement.confirmClicked = false;
+    }, { once: true });
+    
+    // 显示模态框
+    modal.show();
+}
+
+/**
  * 更新统计信息
  */
 function updateStatistics() {
@@ -377,17 +421,17 @@ function exportData() {
         // 导出功能已经在initElectronFeatures中处理
     } else {
         // 在浏览器环境中，使用传统的下载方式
-        const dataStr = JSON.stringify(words, null, 2);
-        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-        
-        const exportFileName = `word_play_data_${new Date().toISOString().slice(0, 10)}.json`;
-        
-        const linkElement = document.createElement('a');
-        linkElement.setAttribute('href', dataUri);
-        linkElement.setAttribute('download', exportFileName);
-        linkElement.click();
-        
-        showAlert('数据导出成功！', 'success');
+    const dataStr = JSON.stringify(words, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileName = `word_play_data_${new Date().toISOString().slice(0, 10)}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileName);
+    linkElement.click();
+    
+    showAlert('数据导出成功！', 'success');
     }
 }
 
@@ -401,14 +445,14 @@ function importData(event) {
         // 导入功能已经在initElectronFeatures中处理
     } else {
         // 在浏览器环境中，使用传统的文件读取方式
-        const file = event.target.files[0];
-        if (!file) return;
-        
-        const reader = new FileReader();
-        reader.onload = function(e) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
             processImportedData(e.target.result);
-        };
-        reader.readAsText(file);
+    };
+    reader.readAsText(file);
     }
 }
 
@@ -423,6 +467,7 @@ window.app = {
     saveWords,
     updateStatistics,
     showAlert,
+    showConfirm,
     exportData,
     importData
 }; 
