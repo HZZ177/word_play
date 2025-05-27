@@ -1,0 +1,564 @@
+/* 全局样式 */
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --info-color: #0dcaf0;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    --card-shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.3);
+    
+    /* 词云颜色变量 */
+    --word-color-1: #ffffff;
+    --word-color-2: #cccccc;
+    --word-color-3: #aaaaaa;
+    --word-color-4: #888888;
+    --word-color-5: #666666;
+    --word-color-6: #1e90ff;
+    --word-color-7: #32cd32;
+    --word-color-8: #ffa500;
+    --word-color-9: #ff6347;
+    
+    /* 配置页面变量 */
+    --config-bg-color: #f5f7fa;
+    --stats-bg-color: #f0f4f8;
+}
+
+/* 基础样式 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* 全屏容器 */
+.fullscreen-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* 悬浮菜单按钮 */
+.menu-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.menu-button:hover {
+    background-color: rgba(13, 110, 253, 0.9);
+    transform: scale(1.1);
+}
+
+.menu-button i {
+    font-size: 24px;
+}
+
+/* 悬浮菜单 */
+.menu-dropdown {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 300px;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    z-index: 1001;
+    transition: all 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-dropdown.visible {
+    left: 0;
+}
+
+.menu-header {
+    padding: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.menu-close:hover {
+    opacity: 1;
+}
+
+.menu-items {
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.menu-item {
+    padding: 15px 20px;
+    font-size: 16px;
+    background: none;
+    border: none;
+    color: white;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.7;
+    border-left: 3px solid transparent;
+}
+
+.menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    opacity: 1;
+}
+
+.menu-item.active {
+    opacity: 1;
+    border-left: 3px solid var(--primary-color);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* 页面容器 */
+.page-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 页面 */
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.page.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 单词墙页面 */
+#word-wall {
+    background-color: #000000;
+}
+
+/* 单词墙样式 - 标签云布局 */
+.word-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    gap: 2px; /* 非常小的间距 */
+    padding: 10px;
+    width: 100%;
+    height: 100%;
+    background-color: #000000; /* 纯黑背景 */
+    overflow: hidden;
+}
+
+/* 单词样式 */
+.word-card {
+    position: relative;
+    display: inline-block;
+    margin: 2px; /* 极小的外边距 */
+    padding: 2px 4px;
+    color: var(--word-color-1); /* 默认白色文字 */
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease-in-out;
+    background: none; /* 无背景 */
+    border: none; /* 无边框 */
+    box-shadow: none; /* 无阴影 */
+    border-radius: 0; /* 无圆角 */
+    opacity: 1;
+}
+
+.word-card:hover {
+    transform: scale(1.2);
+    z-index: 10;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+/* 已掌握单词的样式 */
+.word-card.mastered {
+    opacity: 0.3;
+    text-decoration: line-through;
+}
+
+.word-card.mastered:hover {
+    opacity: 0.6;
+}
+
+/* 单词大小变化类 */
+.word-size-1 { font-size: 0.9rem; }
+.word-size-2 { font-size: 1.1rem; }
+.word-size-3 { font-size: 1.3rem; }
+.word-size-4 { font-size: 1.5rem; }
+.word-size-5 { font-size: 1.7rem; }
+.word-size-6 { font-size: 1.9rem; }
+
+/* 单词颜色变化类 */
+.word-color-1 { color: var(--word-color-1); }
+.word-color-2 { color: var(--word-color-2); }
+.word-color-3 { color: var(--word-color-3); }
+.word-color-4 { color: var(--word-color-4); }
+.word-color-5 { color: var(--word-color-5); }
+.word-color-6 { color: var(--word-color-6); }
+.word-color-7 { color: var(--word-color-7); }
+.word-color-8 { color: var(--word-color-8); }
+.word-color-9 { color: var(--word-color-9); }
+
+/* 右键菜单提示框 */
+.word-tooltip {
+    position: fixed;
+    display: none;
+    max-width: 300px;
+    background-color: #333;
+    color: white;
+    border-radius: 6px;
+    padding: 10px 15px;
+    z-index: 1000;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+    font-size: 0.9rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.word-tooltip.visible {
+    display: block;
+    opacity: 1;
+}
+
+.word-tooltip::after {
+    content: '';
+    position: absolute;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #333 transparent;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.word-tooltip-content {
+    word-break: break-word;
+}
+
+/* 单词配置页面 */
+#word-config {
+    background-color: var(--config-bg-color);
+    padding: 20px;
+}
+
+.config-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.config-section {
+    flex: 1;
+    min-width: 300px;
+}
+
+.config-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.config-card-header {
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+}
+
+.config-card-body {
+    padding: 20px;
+}
+
+/* 统计页面 */
+#statistics {
+    background-color: var(--stats-bg-color);
+    padding: 20px;
+}
+
+.stats-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.stats-section {
+    flex: 1;
+    min-width: 300px;
+}
+
+.stats-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.stats-card-header {
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+}
+
+.stats-card-body {
+    padding: 20px;
+}
+
+.stats-count-card {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.stats-count-card:hover {
+    transform: translateY(-5px);
+}
+
+.stats-count-body {
+    padding: 15px;
+}
+
+.stats-count-body h2 {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.stats-guide-list {
+    list-style: none;
+    padding: 0;
+}
+
+.stats-guide-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.stats-guide-item:last-child {
+    border-bottom: none;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .config-container, .stats-container {
+        padding: 10px;
+    }
+    
+    .menu-dropdown {
+        width: 250px;
+    }
+    
+    .status-indicator {
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    
+    .status-indicator .badge {
+        margin-bottom: 5px;
+    }
+}
+
+/* 响应式调整 - 小屏幕 */
+@media (max-width: 576px) {
+    .menu-button {
+        top: 10px;
+        left: 10px;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .menu-button i {
+        font-size: 20px;
+    }
+    
+    .status-indicator {
+        top: 10px;
+        right: 10px;
+        padding: 5px;
+    }
+    
+    .status-indicator .badge {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+    
+    .config-card-body, .stats-card-body {
+        padding: 15px;
+    }
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* 卡片加载动画 */
+@keyframes cardAppear {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.card-appear {
+    animation: cardAppear 0.4s forwards;
+    animation-delay: calc(var(--animation-order) * 0.05s);
+    opacity: 0;
+}
+
+/* 自定义按钮样式 */
+.btn {
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 自定义表格样式 */
+.table {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.table th {
+    font-weight: 600;
+    border-top: none;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* 进度条样式 */
+.progress {
+    border-radius: 10px;
+    background-color: #e9ecef;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background-color: var(--primary-color);
+    transition: width 0.6s ease;
+}
+
+/* 按钮组样式 */
+.action-buttons .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* 统计卡片样式 */
+.col-6 .card {
+    transition: transform 0.3s ease;
+}
+
+.col-6 .card:hover {
+    transform: translateY(-5px);
+}
+
+.col-6 .card h2 {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* 列表组样式 */
+.list-group-item {
+    border-left: none;
+    border-right: none;
+    padding: 12px 20px;
+}
+
+.list-group-item:first-child {
+    border-top: none;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+/* 自定义文件输入样式 */
+.custom-file-input:lang(zh-CN) ~ .custom-file-label::after {
+    content: "浏览";
+}
+
+/* 页脚样式 */
+footer {
+    border-top: 1px solid #dee2e6;
+}
+
+/* 深色主题单词墙容器 */
+.dark-theme-container {
+    background-color: #121212;
+    color: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+} 

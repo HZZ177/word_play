@@ -1,0 +1,221 @@
+/* 全局样式 */
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --info-color: #0dcaf0;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+}
+
+/* 单词墙样式 */
+.word-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+}
+
+.word-card {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 120px;
+    height: 60px;
+    padding: 0 15px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: var(--dark-color);
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+    overflow: hidden;
+    border: 2px solid var(--primary-color);
+}
+
+.word-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.word-card.mastered {
+    background-color: #e9ecef;
+    color: #6c757d;
+    border-color: #6c757d;
+    opacity: 0.7;
+}
+
+/* 右键菜单提示框 */
+.word-tooltip {
+    position: fixed;
+    display: none;
+    max-width: 300px;
+    background-color: #333;
+    color: white;
+    border-radius: 6px;
+    padding: 10px 15px;
+    z-index: 1000;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
+    font-size: 0.9rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.word-tooltip.visible {
+    display: block;
+    opacity: 1;
+}
+
+.word-tooltip::after {
+    content: '';
+    position: absolute;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #333 transparent;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.word-tooltip-content {
+    word-break: break-word;
+}
+
+/* 导航栏样式 */
+.nav-tabs .nav-link {
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-right: 5px;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+}
+
+/* 自定义卡片和表格样式 */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+    border-bottom: none;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .word-card {
+        min-width: 100px;
+        height: 50px;
+        font-size: 1rem;
+    }
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* 自定义按钮样式 */
+.btn {
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 自定义表格样式 */
+.table {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.table th {
+    font-weight: 600;
+    border-top: none;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* 进度条样式 */
+.progress {
+    border-radius: 10px;
+    background-color: #e9ecef;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background-color: var(--primary-color);
+    transition: width 0.6s ease;
+}
+
+/* 按钮组样式 */
+.action-buttons .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* 统计卡片样式 */
+.col-6 .card {
+    transition: transform 0.3s ease;
+}
+
+.col-6 .card:hover {
+    transform: translateY(-5px);
+}
+
+.col-6 .card h2 {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* 列表组样式 */
+.list-group-item {
+    border-left: none;
+    border-right: none;
+    padding: 12px 20px;
+}
+
+.list-group-item:first-child {
+    border-top: none;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+/* 自定义文件输入样式 */
+.custom-file-input:lang(zh-CN) ~ .custom-file-label::after {
+    content: "浏览";
+}
+
+/* 页脚样式 */
+footer {
+    border-top: 1px solid #dee2e6;
+} 

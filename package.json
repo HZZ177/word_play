@@ -1,0 +1,42 @@
+{
+  "name": "word-play",
+  "version": "1.0.0",
+  "description": "趣味单词学习墙 - 一个简单、有趣的单词学习应用",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "set \"NODE_ENV=development\" && electron .",
+    "dev:tools": "set \"NODE_ENV=development\" && set \"OPEN_DEV_TOOLS=true\" && electron .",
+    "dev:watch": "nodemon --exec electron . --watch ./ --ext .js,.html,.css,.json",
+    "build": "electron-builder",
+    "pack": "electron-builder --dir"
+  },
+  "keywords": [
+    "education",
+    "vocabulary",
+    "learning"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^23.0.0",
+    "electron-builder": "^23.6.0"
+  },
+  "build": {
+    "appId": "com.wordplay.app",
+    "productName": "趣味单词学习墙",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}
