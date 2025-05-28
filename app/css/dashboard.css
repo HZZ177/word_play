@@ -2,10 +2,10 @@
 
 /* 主页面容器 */
 .dashboard-container {
-    padding: 30px;
+    padding: 30px 30px 35px 30px; /* 略微增加底部内边距，确保内容不被页脚遮挡 */
     /* background-color: #f5f7fa; */ /* 原背景色 */
     background: linear-gradient(135deg, #e6e9f0 0%, #eef1f5 100%); /* 新渐变背景 */
-    min-height: 100vh;
+    min-height: calc(100vh - 50px); /* 此处已为页脚预留50px空间 */
 }
 
 /* 应用卡片容器 */
@@ -150,17 +150,47 @@
     color: #0d6efd;
 }
 
-/* 页脚 */
-.dashboard-footer {
+/* 新的独立页脚 */
+.app-footer {
     text-align: center;
-    padding: 20px;
-    margin-top: 50px;
-    color: #888;
-    font-size: 0.9rem;
-    border-top: none;
+    padding: 8px 0; /* 增加上下内边距以提高页脚高度 */
+    margin: 0;
+    /* background-color: #dee2e6; */ /* 移除背景色 */
+    border-top: none; /* 移除顶部边框，由 hr 代替 */
+    font-size: 0.8rem;
+    height: auto;
+    /* box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05); */ /* 移除阴影 */
+    position: fixed; /* 固定定位 */
+    bottom: 0; /* 固定在底部 */
+    left: 0; /* 从左边开始 */
+    width: 100%; /* 占满整个宽度 */
+    z-index: 1000; /* 确保在其他内容之上 */
 }
 
-.dashboard-footer a {
-    color: #0d6efd;
-    text-decoration: none;
+.app-footer hr {
+    margin: 0 auto; /* 水平居中 */
+    width: 95%; /* 分隔线宽度 */
+    opacity: 1; /* 完全不透明 */
+    border: none; /* 移除默认边框 */
+    border-top: 1px solid #c0c8d1; /* 设置新的顶部边框作为分隔线 */
+    height: 1px; /* 确保高度为1px */
+}
+
+.footer-signature {
+    margin: 0;
+    padding: 2px 0;
+    font-size: 0.9em; /* 增大字体大小 */
+    color: rgba(73, 80, 87, 0.65); /* 设置半透明颜色 */
+    font-weight: 500;
+}
+
+.app-version-badge {
+    font-size: 0.55em; /* 相对于父元素 .dashboard-nav-logo 的字体大小 (1.5rem), 进一步调小 */
+    color: #6c757d;    /* 与之前 HZZ 标识颜色一致 */
+    margin-left: 10px;
+    font-weight: 400;   /* 正常字重，抵消父元素的 700 */
+    background-color: #f8f9fa; /* 轻微的背景色，使其像个徽章 */
+    padding: 2px 6px;
+    border-radius: 4px;
+    vertical-align: middle; /* 确保与文字部分更好对齐 */
 } 

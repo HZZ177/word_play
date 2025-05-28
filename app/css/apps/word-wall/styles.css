@@ -1,34 +1,95 @@
 /* 趣味单词学习墙 - 应用样式 */
 
-/* 返回按钮 */
-.return-button {
+/* 左侧悬浮导航按钮组 */
+.left-floating-nav {
     position: fixed;
     top: 20px;
-    right: 20px;
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #333;
-    padding: 10px 15px;
-    border-radius: 20px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
+    left: 20px;
+    z-index: 1050; /* 增加z-index确保在其他内容之上 */
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* 按钮之间的间距调整 */
+}
+
+/* 通用悬浮导航按钮样式 */
+.floating-nav-btn {
+    background-color: rgba(40, 44, 52, 0.75); /* 半透明深色背景 */
+    color: #e0e0e0; /* 图标颜色 */
+    width: 44px;  /* 圆形按钮宽度 */
+    height: 44px; /* 圆形按钮高度 */
+    padding: 0;
+    border-radius: 22px; /* 固定胶囊圆角 (高度的一半) */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: width 0.3s ease, background-color 0.3s ease, padding 0.3s ease; /* 添加 padding 过渡 */
     display: flex;
     align-items: center;
+    justify-content: center; /* 图标居中 */
+    border: none;
+    cursor: pointer;
+    overflow: hidden; /* 配合文本展开 */
+    white-space: nowrap; /* 防止文本换行 */
 }
 
-.return-button:hover {
-    background-color: var(--primary-color);
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.floating-nav-btn i {
+    font-size: 1.1rem; /* 图标大小 */
+    /* margin-right: 0; /* 默认无右边距，悬停时由 .btn-text 的 margin-left 控制间隙 */
+    /* transition: margin 0.3s ease; /* 移除图标的margin过渡 */
 }
 
-/* 移除页面容器的顶部填充 */
-.fullscreen-container {
-    padding-top: 0;
+.floating-nav-btn .btn-text {
+    display: inline-block; /* 或者 flex */
+    opacity: 0;
+    max-width: 0;
+    margin-left: 0;
+    overflow: hidden;
+    transition: opacity 0.2s ease, max-width 0.3s ease 0.05s, margin-left 0.3s ease 0.05s; /* 微调过渡和延迟 */
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #f0f0f0; /* 展开后文本颜色 */
+}
+
+.floating-nav-btn:hover,
+.floating-nav-btn.active:hover { /* .active状态在hover时也展开 */
+    width: 170px; /* 固定展开宽度，或使用 auto + min-width */
+    padding: 0 15px 0 12px; /* 调整padding以适应内容和图标 */
+    background-color: var(--primary-color); /* 悬停背景色 */
+    color: white; /* 悬停时图标和文本统一颜色 */
+    justify-content: flex-start; /* 内容左对齐 */
+}
+
+.floating-nav-btn:hover .btn-text,
+.floating-nav-btn.active:hover .btn-text {
+    opacity: 1;
+    max-width: 120px; /* 确保文本有足够空间但不无限扩展 */
+    margin-left: 8px; /* 图标和文本之间的间距 */
+}
+
+.floating-nav-btn.active {
+    background-color: var(--primary-color); /*激活状态（未悬停）的背景色 */
+    color: white; /* 激活状态图标颜色 */
+    /* 默认激活状态（未悬停）保持收缩的圆形，只显示图标 */
+    /* width: 44px; padding: 0; justify-content: center; (这些是默认值) */
+}
+
+/* 特定于返回按钮的微调（如果需要）*/
+.return-button-style {
+    /* 如果需要与 nav-action-button 有所区别，可在此添加 */
+}
+
+/* 页面容器样式 - 添加左侧内边距避免与导航按钮重叠 */
+.page-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    padding-left: 220px; /* 原有的页面级左内边距 */
+}
+
+/* 页面内容在特定宽度下的响应式调整 */
+@media (max-width: 768px) {
+    .page-container {
+        padding-left: 150px; /* 小屏幕设备减小内边距 */
+    }
 }
 
 /* 响应式调整 */
@@ -49,13 +110,18 @@
     .return-button i {
         margin-right: 3px;
     }
+    
+    .page-container {
+        padding-left: 90px; /* 更小屏幕设备进一步减小内边距 */
+    }
 }
 
 /* 悬浮菜单按钮 */
 .menu-button {
     position: fixed;
     top: 20px;
-    left: 20px;
+    right: 20px;
+    left: auto;
     width: 40px;
     height: 40px;
     background-color: rgba(255, 255, 255, 0.9);
@@ -199,4 +265,297 @@
         padding: 10px 15px;
         font-size: 0.9rem;
     }
+}
+
+/* --- 深色主题调整 --- */
+
+/* 单词配置页面深色主题 */
+#word-config {
+    background-color: #161a25 !important; 
+    color: #d0d8e0 !important;       
+    padding-left: 60px !important; /* 为页面内容本身增加额外左内边距 - 增加到60px */
+    padding-right: 20px !important; /* 增加右边距，使内容更居中 */
+    padding-top: 20px !important;   /* 增加顶部内边距 */
+    padding-bottom: 20px !important;/* 增加底部内边距 */
+    height: 100%; /* 确保占满父容器高度 */
+    overflow-y: auto; /* 内容超出时可滚动 */
+}
+
+#word-config h1, 
+#word-config h2, 
+#word-config h3, 
+#word-config h4, 
+#word-config h5, 
+#word-config h6 {
+    color: #d0d8e0 !important; /* 标题颜色 */
+}
+
+#word-config p, 
+#word-config label, 
+#word-config span:not(.badge):not(.input-group-text), /* 避免影响 badge 和 input-group-text */
+#word-config div:not(.card):not(.input-group) { /* 避免影响卡片和输入组的特定样式 */
+    color: #8a93a5 !important; /* 次要文字和段落颜色 */
+}
+
+
+#word-config .config-card {
+    background-color: #1f2430 !important; /* 新卡片背景 */
+    border: 1px solid #353b4f !important; /* 新边框颜色 */
+    color: #8a93a5 !important;       /* 新次要文字颜色 (卡片内默认文字) */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* 轻微阴影 */
+}
+
+#word-config .config-card-header {
+    background-color: #2a2f3d !important; /* 新卡片头部背景 */
+    color: #d0d8e0 !important;       /* 新主要文字颜色 (头部标题) */
+    border-bottom: 1px solid #353b4f !important; /* 新边框颜色 */
+}
+
+/* 表单元素 */
+#word-config .form-control {
+    background-color: #161a25 !important; /* 略深于卡片背景，或与页面背景一致 */
+    color: #d0d8e0 !important;
+    border: 1px solid #353b4f !important;
+}
+
+#word-config .form-control::placeholder {
+    color: #6a7385 !important; /* 占位符颜色 */
+}
+
+#word-config .form-control:focus {
+    background-color: #1f2430 !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25) !important; /* 沿用Bootstrap的焦点阴影但适配颜色 */
+}
+
+#word-config .input-group-text {
+    background-color: #2a2f3d !important; /* 与卡片头部背景类似 */
+    border: 1px solid #353b4f !important;
+    color: #d0d8e0 !important;
+}
+
+/* 按钮 */
+#word-config .btn-primary {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: #ffffff !important;
+}
+#word-config .btn-primary:hover {
+    background-color: #3b82f6 !important; /* 新强调色悬停 */
+    border-color: #3b82f6 !important;
+}
+
+#word-config .btn-secondary,
+#word-config .btn-outline-secondary { /* 也调整 outline-secondary */
+    background-color: #2a2f3d !important;
+    border-color: #353b4f !important;
+    color: #d0d8e0 !important;
+}
+#word-config .btn-secondary:hover,
+#word-config .btn-outline-secondary:hover {
+    background-color: #353b4f !important;
+    border-color: #4a5168 !important;
+    color: #ffffff !important;
+}
+
+#word-config .btn-danger {
+    background-color: var(--danger-color) !important;
+    border-color: var(--danger-color) !important;
+    color: #ffffff !important;
+}
+#word-config .btn-danger:hover {
+    opacity: 0.85;
+}
+
+
+/* 深色主题下的表格调整 - 增强样式以确保覆盖Bootstrap默认样式 */
+#word-config .table {
+    color: #d0d8e0 !important;       /* 新主要文字颜色 */
+    border-color: #353b4f !important; /* 新边框颜色 */
+    background-color: #1f2430 !important; /* 新卡片背景 (表格整体背景) */
+}
+
+#word-config .table th,
+#word-config .table td {
+    border-color: #353b4f !important;
+    background-color: transparent !important; /* 单元格背景透明，继承表格背景 */
+    color: #d0d8e0 !important;
+}
+
+#word-config .table thead th {
+    color: #d0d8e0 !important;
+    background-color: #2a2f3d !important; /* 新卡片头部背景 */
+    border-bottom-width: 1px !important;
+    border-bottom-color: #353b4f !important;
+}
+
+#word-config .table-hover tbody tr:hover td, /* 确保 td 也应用悬停颜色 */
+#word-config .table-hover tbody tr:hover {
+    background-color: #2a2f3d !important; /* 悬停行背景，比卡片背景略深或不同 */
+    color: #ffffff !important;        /* 悬停行文字颜色，更亮 */
+}
+
+#word-config .table-hover tbody tr {
+     /* background-color: #1f2430 !important; /* 行背景已由 .table 控制或透明 */
+}
+
+/* 表格中的按钮样式 */
+#word-config .table .btn-outline-primary {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    background-color: transparent !important;
+}
+#word-config .table .btn-outline-primary:hover {
+    background-color: var(--primary-color) !important;
+    color: #ffffff !important;
+}
+
+#word-config .table .btn-outline-danger {
+    color: var(--danger-color) !important;
+    border-color: var(--danger-color) !important;
+    background-color: transparent !important;
+}
+#word-config .table .btn-outline-danger:hover {
+    background-color: var(--danger-color) !important;
+    color: #ffffff !important;
+}
+
+
+/* 深色主题下的徽章调整 */
+#word-config .badge.bg-primary {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+#word-config .badge.bg-secondary {
+    background-color: #353b4f !important; /* 使用新的次要背景色 */
+    color: #d0d8e0 !important;
+}
+
+
+/* 修复模态框的暗色主题 */
+.modal-content { /* 这个是全局的，如果只想改 word-config 内的模态框，需要 #word-config .modal-content */
+    background-color: #1f2430; /* 新卡片背景 */
+    color: #d0d8e0;            /* 新主要文字 */
+    border: 1px solid #353b4f; /* 新边框 */
+}
+
+.modal-header {
+    border-bottom: 1px solid #353b4f;
+    background-color: #2a2f3d; /* 新卡片头部背景 */
+}
+
+.modal-title {
+    color: #d0d8e0;
+}
+
+/* 确保表格中已掌握单词行的样式也适应深色主题 - 使用CSS变量覆盖 */
+/* ... existing .table-light styles ... a bit lower in the file */
+
+/* 统计页面深色主题 */
+#statistics {
+    background-color: #161a25 !important; 
+    color: #d0d8e0 !important;       
+    padding-left: 60px !important; /* 为页面内容本身增加额外左内边距 - 增加到60px */
+    padding-right: 20px !important; /* 增加右边距，使内容更居中 */
+    padding-top: 20px !important;   /* 增加顶部内边距 */
+    padding-bottom: 20px !important;/* 增加底部内边距 */
+    height: 100%; /* 确保占满父容器高度 */
+    overflow-y: auto; /* 内容超出时可滚动 */
+}
+
+#statistics h1, 
+#statistics h2, 
+#statistics h3, 
+#statistics h4, 
+#statistics h5, 
+#statistics h6 {
+    color: #d0d8e0 !important;
+}
+
+#statistics p,
+#statistics div:not(.card):not(.progress-bar):not(.card-body), /* 避免覆盖卡片和进度条等特定元素 */
+#statistics span:not(.badge) {
+    color: #8a93a5 !important; /* 次要文字 */
+}
+
+#statistics .stats-card {
+    background-color: #1f2430 !important; /* 新卡片背景 */
+    border: 1px solid #353b4f !important; /* 新边框颜色 */
+    color: #8a93a5 !important;       /* 新次要文字颜色 */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+#statistics .stats-card-header {
+    background-color: #2a2f3d !important; /* 新卡片头部背景 */
+    color: #d0d8e0 !important;       /* 新主要文字颜色 */
+    border-bottom: 1px solid #353b4f !important;
+}
+
+#statistics .stats-count-card {
+    background-color: #1f2430 !important; /* 与普通卡片背景一致或略有不同 */
+    border: 1px solid #353b4f !important;
+    color: #8a93a5 !important;
+}
+
+#statistics .stats-count-card h2 { /* 通常是数字，用主题强调色 */
+    color: var(--primary-color) !important;
+}
+
+#statistics .stats-count-card p { /* 描述性文字 */
+    color: #8a93a5 !important;
+}
+
+#statistics .list-group-item {
+    background-color: #1f2430 !important;
+    border-color: #353b4f !important;
+    color: #d0d8e0 !important;
+}
+
+#statistics .progress {
+    background-color: #2a2f3d !important; /* 进度条背景 */
+}
+
+#statistics .progress-bar {
+    background-color: var(--primary-color) !important; /* 进度条填充色 */
+    color: #ffffff !important;
+}
+
+#statistics .stats-guide-list {
+    list-style: none;
+    padding: 0;
+}
+
+#statistics .stats-guide-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #333333;
+    color: #c0c0c0;
+}
+
+#statistics .stats-guide-item:last-child {
+    border-bottom: none;
+}
+
+#statistics .stats-guide-item i {
+    /* 确保图标颜色在深色背景下可见，Bootstrap的颜色类可能需要调整 */
+    /* 例如 .text-primary 可能需要改为更亮的颜色，或者在这里覆盖 */
+}
+
+/* 表格中的按钮样式 */
+#word-config .table .btn-outline-primary,
+#word-config .table .btn-outline-danger {
+    background-color: transparent !important; /* 确保按钮背景透明 */
+    border-color: currentColor !important; /* 确保边框颜色正确 */
+}
+
+#word-config .table .btn-outline-primary {
+    color: var(--primary-color) !important; /* 使用主题色 */
+}
+
+#word-config .table .btn-outline-danger {
+    color: var(--danger-color) !important; /* 使用主题色 */
+}
+
+#word-config .table .btn-outline-primary:hover,
+#word-config .table .btn-outline-danger:hover {
+    color: #fff !important; /* 确保悬停时文字为白色 */
 } 

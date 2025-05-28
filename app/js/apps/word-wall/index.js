@@ -50,54 +50,20 @@ function initElectronFeatures() {
  * 初始化导航
  */
 function initNavigation() {
-    // 获取菜单按钮和菜单元素
-    const menuButton = document.getElementById('menu-button');
-    const menuDropdown = document.getElementById('menu-dropdown');
-    const menuClose = document.getElementById('menu-close');
-    const menuItems = document.querySelectorAll('.menu-item');
+    // 获取新的导航按钮
+    const navActionButtons = document.querySelectorAll('.floating-nav-btn.nav-action-button');
     
-    // 创建遮罩层
-    const overlay = document.createElement('div');
-    overlay.className = 'menu-overlay';
-    document.body.appendChild(overlay);
-    
-    // 菜单按钮点击事件
-    if (menuButton) {
-        menuButton.addEventListener('click', () => {
-            menuDropdown.classList.add('active');
-            overlay.classList.add('active');
-        });
-    }
-    
-    // 关闭按钮点击事件
-    if (menuClose) {
-        menuClose.addEventListener('click', () => {
-            menuDropdown.classList.remove('active');
-            overlay.classList.remove('active');
-        });
-    }
-    
-    // 遮罩层点击事件
-    overlay.addEventListener('click', () => {
-        menuDropdown.classList.remove('active');
-        overlay.classList.remove('active');
-    });
-    
-    // 菜单项点击事件
-    menuItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-            const target = item.dataset.target;
+    // 新导航按钮点击事件
+    navActionButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const target = button.dataset.target;
             
             // 切换页面
             switchPage(target);
             
-            // 更新菜单项状态
-            menuItems.forEach(mi => mi.classList.remove('active'));
-            item.classList.add('active');
-            
-            // 关闭菜单
-            menuDropdown.classList.remove('active');
-            overlay.classList.remove('active');
+            // 更新按钮激活状态
+            navActionButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
         });
     });
 }

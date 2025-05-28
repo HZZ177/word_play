@@ -20,22 +20,28 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.appInfo.appVersion) {
             console.log('应用版本:', window.appInfo.appVersion);
             
-            // 如果页脚存在，添加版本信息
-            const footer = document.querySelector('.dashboard-footer');
-            if (footer) {
-                footer.innerHTML = `<small>版本: ${window.appInfo.appVersion}</small>`;
-                footer.style.opacity = '0.6';
+            // 修改目标为导航栏logo
+            const navLogo = document.querySelector('.dashboard-nav-logo');
+            if (navLogo) {
+                const versionSpan = document.createElement('span');
+                versionSpan.classList.add('app-version-badge'); 
+                versionSpan.textContent = `V ${window.appInfo.appVersion}`;
+                // 样式可以在 CSS 中定义，这里暂时不直接设置 style
+                navLogo.appendChild(versionSpan);
             }
         } else if (window.appInfo.getVersion) {
             // 如果有getVersion方法，使用它获取版本
             window.appInfo.getVersion().then(version => {
                 console.log('应用版本:', version);
                 
-                // 如果页脚存在，添加版本信息
-                const footer = document.querySelector('.dashboard-footer');
-                if (footer) {
-                    footer.innerHTML = `<small>版本: ${version}</small>`;
-                    footer.style.opacity = '0.6';
+                // 修改目标为导航栏logo
+                const navLogo = document.querySelector('.dashboard-nav-logo');
+                if (navLogo) {
+                    const versionSpan = document.createElement('span');
+                    versionSpan.classList.add('app-version-badge');
+                    versionSpan.textContent = `版本: ${version}`;
+                    // 样式可以在 CSS 中定义
+                    navLogo.appendChild(versionSpan);
                 }
             }).catch(err => {
                 console.error('获取版本信息失败:', err);

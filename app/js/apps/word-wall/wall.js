@@ -163,18 +163,31 @@ function renderWordWall() {
 
             // 定义 animationend 回调处理函数
             const handleAnimationEnd = (isMastering) => {
-                currentTarget.classList.remove('is-animating', 'mastering', 'unmastering');
-                // 移除自身，确保只执行一次
+                const animationClassesToRemove = ['is-animating'];
+                if (isMastering) {
+                    animationClassesToRemove.push('mastering');
+                } else {
+                    animationClassesToRemove.push('unmastering');
+                }
+
+                // 移除动画完成事件监听器
+                // 注意：currentAnimationEndHandler 变量需要在外部作用域可访问，或者通过闭包传递
+                // 假设 currentTarget 和 currentAnimationEndHandler 是在此函数作用域内或闭包中正确定义的
                 currentTarget.removeEventListener('animationend', currentAnimationEndHandler);
 
                 if (isMastering) {
+                    // 先添加最终状态类
                     currentTarget.classList.add('mastered');
-                    console.log('掌握动画结束，已添加 .mastered 类，新状态:', words[index].word, '已掌握:', words[index].mastered);
+                    
+                    // 延迟移除动画相关的类，给浏览器渲染 .mastered 类的机会
+                    requestAnimationFrame(() => {
+                        currentTarget.classList.remove(...animationClassesToRemove);
+                    });
                 } else {
-                    // 移除 mastered 类已在启动 unmastering 动画前完成
-                    console.log('取消掌握动画结束，已移除 .mastered 类，新状态:', words[index].word, '已掌握:', words[index].mastered);
+                    // 对于 unmastering，.mastered 类已在动画开始前移除
+                    // 直接移除动画类即可，因为 forwards 会保持动画的最终（正常）状态
+                    currentTarget.classList.remove(...animationClassesToRemove);
                 }
-                // 保存和更新统计的操作移到状态改变之后立刻执行，而不是等待动画结束
             };
             
             let currentAnimationEndHandler; // 用于保存当前注册的事件处理函数引用
