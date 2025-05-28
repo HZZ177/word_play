@@ -19,8 +19,8 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^23.0.0",
-    "electron-builder": "^23.6.0"
+    "electron": "^28.3.0",
+    "electron-builder": "^24.9.1"
   },
   "build": {
     "appId": "com.learningtoolbox.app",
