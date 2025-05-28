@@ -3,7 +3,8 @@
 /* 主页面容器 */
 .dashboard-container {
     padding: 30px;
-    background-color: #f5f7fa;
+    /* background-color: #f5f7fa; */ /* 原背景色 */
+    background: linear-gradient(135deg, #e6e9f0 0%, #eef1f5 100%); /* 新渐变背景 */
     min-height: 100vh;
 }
 
@@ -29,29 +30,29 @@
 .app-cards-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 30px;
+    gap: 24px; /* 修改间距 */
     justify-content: center;
-    margin-top: 30px;
+    margin-top: 35px; /* 修改顶部边距 */
 }
 
 /* 应用卡片样式 */
 .app-card {
-    width: 300px;
-    border-radius: 15px;
+    width: 280px; /* 缩小卡片宽度 */
+    border-radius: 12px; /* 修改圆角 */
     overflow: hidden;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); /* 修改阴影 */
     transition: all 0.3s ease;
     background-color: #fff;
     cursor: pointer;
 }
 
 .app-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    transform: translateY(-4px); /* 修改悬停上浮距离 */
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08); /* 修改悬停阴影 */
 }
 
 .app-card-image {
-    height: 160px;
+    height: 150px; /* 可选：略微调整图片高度以适应新卡片尺寸 */
     overflow: hidden;
     position: relative;
 }
@@ -64,53 +65,55 @@
 }
 
 .app-card:hover .app-card-image img {
-    transform: scale(1.1);
+    transform: scale(1.05); /* 悬停图片缩放略微减小 */
 }
 
 .app-card-content {
-    padding: 20px;
+    padding: 18px; /* 修改内边距 */
 }
 
 .app-card-title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin-bottom: 10px;
+    font-size: 1.3rem; /* 可选：略微调整标题字体大小 */
+    font-weight: 600; /* 可选：调整字重 */
+    margin-bottom: 8px; /* 可选：调整标题下边距 */
     color: #333;
 }
 
 .app-card-description {
-    font-size: 0.95rem;
-    color: #666;
-    margin-bottom: 15px;
-    line-height: 1.5;
+    font-size: 0.9rem; /* 可选：调整描述字体大小 */
+    color: #555; /* 可选：调整描述字体颜色 */
+    margin-bottom: 12px; /* 可选：调整描述下边距 */
+    line-height: 1.4; /* 可选：调整行高 */
 }
 
 .app-card-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
+    padding-top: 12px; /* 可选：调整页脚上内边距 */
+    border-top: 1px solid #f0f0f0; /* 修改分割线颜色 */
 }
 
 .app-card-stats {
-    font-size: 0.9rem;
-    color: #888;
+    font-size: 0.85rem; /* 可选：调整统计信息字体大小 */
+    color: #777; /* 可选：调整统计信息字体颜色 */
 }
 
 .app-card-button {
-    padding: 8px 15px;
-    background-color: #0d6efd;
+    padding: 7px 14px; /* 修改按钮内边距 */
+    background-color: var(--primary-color, #0d6efd); /* 使用CSS变量或默认值 */
     color: white;
     border: none;
-    border-radius: 5px;
-    font-size: 0.9rem;
+    border-radius: 6px; /* 修改按钮圆角 */
+    font-size: 0.85rem; /* 可选：调整按钮字体大小 */
+    font-weight: 500; /* 可选：调整按钮字重 */
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease; /* 添加 transform 过渡 */
 }
 
 .app-card-button:hover {
-    background-color: #0b5ed7;
+    background-color: #0b5ed7; /*保持现有逻辑或使用 color-mix */
+    transform: scale(1.03); /* 按钮悬停轻微放大 */
 }
 
 /* 响应式调整 */
@@ -124,8 +127,8 @@
     }
     
     .app-card {
-        width: 100%;
-        max-width: 350px;
+        width: calc(100% - 20px); /* 调整小屏幕下的卡片宽度 */
+        max-width: 320px; /* 调整小屏幕下的最大宽度 */
     }
 }
 
@@ -176,6 +179,7 @@
     margin-top: 50px;
     color: #888;
     font-size: 0.9rem;
+    border-top: none;
 }
 
 .dashboard-footer a {

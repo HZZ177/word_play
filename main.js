@@ -80,42 +80,6 @@ function createMenu() {
       label: '文件',
       submenu: [
         {
-          label: '导入单词数据',
-          click: () => {
-            dialog.showOpenDialog(mainWindow, {
-              title: '导入单词数据',
-              filters: [{ name: 'JSON文件', extensions: ['json'] }],
-              properties: ['openFile']
-            }).then(result => {
-              if (!result.canceled && result.filePaths.length > 0) {
-                const filePath = result.filePaths[0];
-                // 发送文件路径到渲染进程
-                mainWindow.webContents.send('import-file', filePath);
-              }
-            }).catch(err => {
-              console.error('导入文件对话框出错:', err);
-            });
-          }
-        },
-        {
-          label: '导出单词数据',
-          click: () => {
-            dialog.showSaveDialog(mainWindow, {
-              title: '导出单词数据',
-              defaultPath: `词汇表_${new Date().toISOString().slice(0, 10)}.json`,
-              filters: [{ name: 'JSON文件', extensions: ['json'] }]
-            }).then(result => {
-              if (!result.canceled) {
-                // 发送保存路径到渲染进程
-                mainWindow.webContents.send('export-file', result.filePath);
-              }
-            }).catch(err => {
-              console.error('导出文件对话框出错:', err);
-            });
-          }
-        },
-        { type: 'separator' },
-        {
           label: '退出',
           role: 'quit'
         }
@@ -166,7 +130,7 @@ function createMenu() {
         {
           label: '使用说明',
           click: async () => {
-            await shell.openExternal('https://github.com/yourusername/word-play');
+            await shell.openExternal('https://github.com/HZZ177/word_play');
           }
         }
       ]
