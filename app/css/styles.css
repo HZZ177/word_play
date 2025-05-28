@@ -665,20 +665,15 @@ footer {
 /* 单词掌握动画 */
 @keyframes wordMastered {
     0% {
-        opacity: 1;
+        /* 初始状态从当前元素的实际状态继承，但明确旋转和缩放的起点 */
         transform: translate(-50%, -50%) rotate(0deg) scale(1);
+        opacity: 1;
         text-decoration: none;
         filter: brightness(1);
     }
-    50% {
-        opacity: 0.6;
-        transform: translate(-50%, -50%) rotate(180deg) scale(0.9);
-        text-decoration: line-through;
-        filter: brightness(0.7);
-    }
     100% {
-        opacity: 0.3;
         transform: translate(-50%, -50%) rotate(360deg) scale(0.8);
+        opacity: 0.3;
         text-decoration: line-through;
         filter: brightness(0.5);
     }
@@ -687,20 +682,15 @@ footer {
 /* 单词取消掌握动画 */
 @keyframes wordUnmastered {
     0% {
+        /* 初始状态从当前元素的实际状态继承，但明确旋转和缩放的起点 */
+        transform: translate(-50%, -50%) rotate(0deg) scale(0.8); /* 从 mastered 的视觉效果开始 */
         opacity: 0.3;
-        transform: translate(-50%, -50%) scale(0.8);
         text-decoration: line-through;
         filter: brightness(0.5);
     }
-    50% {
-        opacity: 0.7;
-        transform: translate(-50%, -50%) scale(1.1);
-        text-decoration: none;
-        filter: brightness(1.2);
-    }
     100% {
+        transform: translate(-50%, -50%) rotate(360deg) scale(1);
         opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
         text-decoration: none;
         filter: brightness(1);
     }
@@ -708,10 +698,13 @@ footer {
 
 /* 单词掌握动画类 */
 .word-card.mastering {
-    animation: wordMastered 0.8s forwards;
+    animation: wordMastered 0.8s; /* 移除 !important */
 }
 
 /* 单词取消掌握动画类 */
 .word-card.unmastering {
-    animation: wordUnmastered 0.8s forwards;
+    animation: wordUnmastered 0.8s; /* 移除 !important */
+    /* unmastering 动画的目标是恢复到无 mastered 类的状态，
+       所以不需要在这里强制 opacity, text-decoration 等，
+       这些应该在动画结束后通过移除 .mastered 类来自然恢复 */
 } 

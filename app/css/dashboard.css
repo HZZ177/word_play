@@ -1,0 +1,184 @@
+/* 学习工具箱 - 主页面样式 */
+
+/* 主页面容器 */
+.dashboard-container {
+    padding: 30px;
+    background-color: #f5f7fa;
+    min-height: 100vh;
+}
+
+/* 页面标题 */
+.dashboard-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.dashboard-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.dashboard-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* 应用卡片容器 */
+.app-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+/* 应用卡片样式 */
+.app-card {
+    width: 300px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.app-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.app-card-image {
+    height: 160px;
+    overflow: hidden;
+    position: relative;
+}
+
+.app-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.app-card:hover .app-card-image img {
+    transform: scale(1.1);
+}
+
+.app-card-content {
+    padding: 20px;
+}
+
+.app-card-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.app-card-description {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.app-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.app-card-stats {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.app-card-button {
+    padding: 8px 15px;
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.app-card-button:hover {
+    background-color: #0b5ed7;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 20px;
+    }
+    
+    .dashboard-title {
+        font-size: 2rem;
+    }
+    
+    .app-card {
+        width: 100%;
+        max-width: 350px;
+    }
+}
+
+/* 顶部导航栏 */
+.dashboard-nav {
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboard-nav-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.dashboard-nav-logo i {
+    margin-right: 10px;
+    color: #0d6efd;
+}
+
+.dashboard-nav-menu {
+    display: flex;
+    gap: 20px;
+}
+
+.dashboard-nav-item {
+    color: #666;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.dashboard-nav-item:hover {
+    color: #0d6efd;
+}
+
+/* 页脚 */
+.dashboard-footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 50px;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.dashboard-footer a {
+    color: #0d6efd;
+    text-decoration: none;
+} 

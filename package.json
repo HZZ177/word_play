@@ -1,7 +1,7 @@
 {
-  "name": "word-play",
+  "name": "learning-toolbox",
   "version": "1.0.0",
-  "description": "趣味单词学习墙 - 一个简单、有趣的单词学习应用",
+  "description": "学习工具箱 - 一个多功能的学习工具集合",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -23,8 +23,8 @@
     "electron-builder": "^23.6.0"
   },
   "build": {
-    "appId": "com.wordplay.app",
-    "productName": "趣味单词学习墙",
+    "appId": "com.learningtoolbox.app",
+    "productName": "学习工具箱",
     "directories": {
       "output": "dist"
     },

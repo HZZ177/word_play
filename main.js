@@ -37,7 +37,7 @@ function createWindow() {
     height: 800,
     minWidth: 800,
     minHeight: 600,
-    title: '趣味单词学习墙',
+    title: '学习工具箱',
     icon: path.join(__dirname, 'build/icon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -155,9 +155,9 @@ function createMenu() {
           label: '关于',
           click: () => {
             dialog.showMessageBox(mainWindow, {
-              title: '关于趣味单词学习墙',
-              message: '趣味单词学习墙',
-              detail: '版本: 1.0.0\n一个简单、有趣的单词学习应用，专为课堂教学设计。',
+              title: '关于学习工具箱',
+              message: '学习工具箱',
+              detail: '版本: 1.0.0\n一个多功能的学习工具集合，包含趣味单词墙等多个学习辅助工具。',
               buttons: ['确定'],
               icon: path.join(__dirname, 'build/icon.ico')
             });

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>趣味单词学习墙 - 学习工具箱</title>
+    <!-- Bootstrap 5 CSS from CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/apps/word-wall/styles.css">
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 返回工具箱按钮 -->
+    <a href="../../index.html" class="return-button">
+        <i class="fas fa-arrow-left me-2"></i>
+        返回工具箱
+    </a>
+    
+    <!-- 悬浮菜单按钮 -->
+    <div class="menu-button" id="menu-button">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- 悬浮菜单 -->
+    <div class="menu-dropdown" id="menu-dropdown">
+        <div class="menu-header">
+            <i class="fas fa-book-open me-2"></i>趣味单词学习墙
+            <button class="menu-close" id="menu-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="menu-items">
+            <button class="menu-item active" data-target="word-wall">
+                <i class="fas fa-th me-2"></i>单词墙
+            </button>
+            <button class="menu-item" data-target="word-config">
+                <i class="fas fa-cog me-2"></i>单词配置
+            </button>
+            <button class="menu-item" data-target="statistics">
+                <i class="fas fa-chart-bar me-2"></i>学习统计
+            </button>
+        </div>
+    </div>
+
+    <!-- 主容器 - 全屏 -->
+    <div class="fullscreen-container">
+        <!-- 页面内容 -->
+        <div class="page-container">
+            <!-- 单词墙页面 -->
+            <div class="page active" id="word-wall">
+                <!-- 添加按钮组 -->
+                <div class="floating-buttons">
+                    <!-- 重置掌握进度按钮 -->
+                    <button id="reset-progress-btn" class="action-button reset-button" title="重置掌握进度">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                    <!-- 重排按钮 -->
+                    <button id="rearrange-btn" class="action-button rearrange-button" title="重新排列单词">
+                        <i class="fas fa-random"></i>
+                    </button>
+                </div>
+                <div id="word-container" class="word-container">
+                    <!-- 单词卡片将通过JS动态添加 -->
+                </div>
+            </div>
+
+            <!-- 单词配置页面 -->
+            <div class="page" id="word-config">
+                <div class="config-container">
+                    <div class="config-section">
+                        <div class="config-card">
+                            <div class="config-card-header">
+                                <h5 class="mb-0">添加/编辑单词</h5>
+                            </div>
+                            <div class="config-card-body">
+                                <form id="word-form">
+                                    <input type="hidden" id="edit-index" value="-1">
+                                    <div class="mb-3">
+                                        <label for="word-input" class="form-label">单词</label>
+                                        <input type="text" class="form-control" id="word-input" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="translation-input" class="form-label">翻译/解释</label>
+                                        <textarea class="form-control" id="translation-input" rows="2" required></textarea>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save me-1"></i>保存
+                                        </button>
+                                        <button type="button" id="clear-btn" class="btn btn-secondary">
+                                            <i class="fas fa-eraser me-1"></i>清空
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <div class="config-card mt-3">
+                            <div class="config-card-header">
+                                <h5 class="mb-0">数据管理</h5>
+                            </div>
+                            <div class="config-card-body">
+                                <div class="d-grid gap-2">
+                                    <button id="import-btn" class="btn btn-outline-primary">
+                                        <i class="fas fa-file-import me-1"></i>导入单词数据
+                                    </button>
+                                    <button id="export-btn" class="btn btn-outline-success">
+                                        <i class="fas fa-file-export me-1"></i>导出单词数据
+                                    </button>
+                                    <button id="reset-mastered-btn" class="btn btn-outline-warning">
+                                        <i class="fas fa-redo me-1"></i>重置掌握状态
+                                    </button>
+                                    <button id="clear-all-btn" class="btn btn-outline-danger">
+                                        <i class="fas fa-trash me-1"></i>清空所有单词
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="config-section">
+                        <div class="config-card">
+                            <div class="config-card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">单词列表</h5>
+                                    <span class="badge bg-primary" id="word-count">0 个单词</span>
+                                </div>
+                            </div>
+                            <div class="config-card-body">
+                                <!-- 搜索框 -->
+                                <div class="mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light">
+                                            <i class="fas fa-search"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="word-search" placeholder="搜索单词或翻译...">
+                                        <button class="btn btn-outline-secondary" type="button" id="search-clear">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th width="30%">单词</th>
+                                                <th width="50%">翻译/解释</th>
+                                                <th width="20%">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="word-list">
+                                            <!-- 单词列表将通过JS动态添加 -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统计信息页面 -->
+            <div class="page" id="statistics">
+                <div class="stats-container">
+                    <div class="stats-section">
+                        <div class="stats-card">
+                            <div class="stats-card-header">
+                                <h5 class="mb-0">学习进度</h5>
+                            </div>
+                            <div class="stats-card-body">
+                                <div class="progress mb-3" style="height: 25px;">
+                                    <div class="progress-bar" id="progress-bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <div class="stats-count-card">
+                                            <div class="stats-count-body">
+                                                <h2 id="stat-mastered">0</h2>
+                                                <p class="mb-0">已掌握</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="stats-count-card">
+                                            <div class="stats-count-body">
+                                                <h2 id="stat-remaining">0</h2>
+                                                <p class="mb-0">未掌握</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-section">
+                        <div class="stats-card">
+                            <div class="stats-card-header">
+                                <h5 class="mb-0">使用指南</h5>
+                            </div>
+                            <div class="stats-card-body">
+                                <ul class="stats-guide-list">
+                                    <li class="stats-guide-item">
+                                        <i class="fas fa-mouse me-2 text-primary"></i>
+                                        <strong>左键点击单词</strong>：标记为已掌握（变暗）
+                                    </li>
+                                    <li class="stats-guide-item">
+                                        <i class="fas fa-keyboard me-2 text-success"></i>
+                                        <strong>Ctrl + 左键点击</strong>：恢复为未掌握（变亮）
+                                    </li>
+                                    <li class="stats-guide-item">
+                                        <i class="fas fa-mouse-pointer me-2 text-danger"></i>
+                                        <strong>右键点击单词</strong>：显示单词翻译/解释
+                                    </li>
+                                    <li class="stats-guide-item">
+                                        <i class="fas fa-cog me-2 text-secondary"></i>
+                                        <strong>单词配置</strong>：添加、编辑和管理单词
+                                    </li>
+                                    <li class="stats-guide-item">
+                                        <i class="fas fa-chart-bar me-2 text-info"></i>
+                                        <strong>学习统计</strong>：查看学习进度统计
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 单词提示框 -->
+    <div id="word-tooltip" class="word-tooltip">
+        <div class="word-tooltip-content"></div>
+    </div>
+
+    <!-- 自定义确认弹窗 -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">确认操作</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
+                </div>
+                <div class="modal-body" id="confirmModalBody">
+                    确定要执行此操作吗？
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="confirmModalConfirmBtn">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 通用工具脚本 -->
+    <script src="../../js/utils.js"></script>
+    <!-- 单词墙应用脚本 -->
+    <script src="../../js/apps/word-wall/index.js"></script>
+    <script src="../../js/apps/word-wall/wall.js"></script>
+    <script src="../../js/apps/word-wall/config.js"></script>
+</body>
+</html> 
