@@ -8,31 +8,13 @@
     min-height: 100vh;
 }
 
-/* 页面标题 */
-.dashboard-header {
-    margin-bottom: 30px;
-    text-align: center;
-}
-
-.dashboard-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.dashboard-subtitle {
-    font-size: 1.2rem;
-    color: #666;
-}
-
 /* 应用卡片容器 */
 .app-cards-container {
     display: flex;
     flex-wrap: wrap;
     gap: 24px; /* 修改间距 */
     justify-content: center;
-    margin-top: 35px; /* 修改顶部边距 */
+    margin-top: 30px; /* 调整顶部边距，为整体布局提供足够空间 */
 }
 
 /* 应用卡片样式 */
@@ -120,10 +102,6 @@
 @media (max-width: 768px) {
     .dashboard-container {
         padding: 20px;
-    }
-    
-    .dashboard-title {
-        font-size: 2rem;
     }
     
     .app-card {

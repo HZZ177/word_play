@@ -15,6 +15,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const isElectron = window.appInfo && window.appInfo.isElectron;
     if (isElectron) {
         console.log('在Electron环境中运行');
+        
+        // 显示应用版本信息
+        if (window.appInfo.appVersion) {
+            console.log('应用版本:', window.appInfo.appVersion);
+            
+            // 如果页脚存在，添加版本信息
+            const footer = document.querySelector('.dashboard-footer');
+            if (footer) {
+                footer.innerHTML = `<small>版本: ${window.appInfo.appVersion}</small>`;
+                footer.style.opacity = '0.6';
+            }
+        } else if (window.appInfo.getVersion) {
+            // 如果有getVersion方法，使用它获取版本
+            window.appInfo.getVersion().then(version => {
+                console.log('应用版本:', version);
+                
+                // 如果页脚存在，添加版本信息
+                const footer = document.querySelector('.dashboard-footer');
+                if (footer) {
+                    footer.innerHTML = `<small>版本: ${version}</small>`;
+                    footer.style.opacity = '0.6';
+                }
+            }).catch(err => {
+                console.error('获取版本信息失败:', err);
+            });
+        }
     }
 });
 

@@ -6,6 +6,7 @@
 const { ipcMain } = require('electron');
 const fs = require('fs');
 const path = require('path');
+const packageInfo = require('./package.json');
 
 // 处理读取文件请求
 ipcMain.handle('read-file', async (event, filePath) => {
@@ -26,6 +27,16 @@ ipcMain.handle('write-file', async (event, { filePath, data }) => {
   } catch (error) {
     console.error('写入文件出错:', error);
     return { success: false, error: error.message };
+  }
+});
+
+// 处理获取应用版本信息请求
+ipcMain.handle('get-app-version', async () => {
+  try {
+    return packageInfo.version;
+  } catch (error) {
+    console.error('获取应用版本信息出错:', error);
+    return '1.0.0'; // 返回默认版本
   }
 });
 

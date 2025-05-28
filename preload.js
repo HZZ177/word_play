@@ -11,6 +11,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   readFile: (filePath) => ipcRenderer.invoke('read-file', filePath),
   writeFile: (filePath, data) => ipcRenderer.invoke('write-file', { filePath, data }),
   
+  // 获取应用信息
+  getAppVersion: () => ipcRenderer.invoke('get-app-version'),
+  
   // 事件监听
   onImportFile: (callback) => {
     ipcRenderer.on('import-file', (event, filePath) => callback(filePath));
@@ -26,9 +29,23 @@ contextBridge.exposeInMainWorld('electronAPI', {
   exportComplete: (result) => ipcRenderer.send('export-complete', result)
 });
 
-// 注入一些额外的自定义信息到window对象
-contextBridge.exposeInMainWorld('appInfo', {
-  isElectron: true,
-  appName: '趣味单词学习墙',
-  appVersion: '1.0.0'
-}); 
+// 初始化时获取版本信息并设置到window对象
+(async () => {
+  try {
+    const version = await ipcRenderer.invoke('get-app-version');
+    // 注入应用信息到window对象
+    contextBridge.exposeInMainWorld('appInfo', {
+      isElectron: true,
+      appName: '趣味单词学习墙',
+      appVersion: version
+    });
+  } catch (error) {
+    console.error('获取应用版本信息失败:', error);
+    // 设置一个默认版本，防止应用崩溃
+    contextBridge.exposeInMainWorld('appInfo', {
+      isElectron: true,
+      appName: '趣味单词学习墙',
+      appVersion: '1.0.0'
+    });
+  }
+})(); 
