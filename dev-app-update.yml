@@ -1,0 +1,6 @@
+provider: github
+owner: HZZ177
+repo: word_play
+private: false
+# 如果您的仓库是私有的，请设置private为true并取消下面一行的注释
+# token: ${GH_TOKEN} 
