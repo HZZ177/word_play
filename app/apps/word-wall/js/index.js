@@ -105,13 +105,13 @@ function loadWords() {
                 // 渲染单词墙和单词列表
                 if (typeof window.renderWordWall === 'function') {
                     window.renderWordWall();
-                } else if (typeof renderWordWall === 'function') {
+                } else if (typeof renderWordWall === 'function') { // 支持全局或局部函数
                     renderWordWall();
                 }
                 
                 if (typeof window.renderWordList === 'function') {
                     window.renderWordList();
-                } else if (typeof renderWordList === 'function') {
+                } else if (typeof renderWordList === 'function') { // 支持全局或局部函数
                     renderWordList();
                 }
                 
@@ -208,7 +208,7 @@ function processImportedData(data) {
             ).map(item => ({
                 word: item.word,
                 translation: item.translation,
-                mastered: Boolean(item.mastered)
+                mastered: Boolean(item.mastered) // 确保mastered是布尔值
             }));
             
             if (validData.length > 0) {
@@ -252,7 +252,7 @@ function processImportedData(data) {
 }
 
 /**
- * 导出数据到指定文件
+ * 将当前单词数据导出到指定文件
  * @param {string} filePath - 文件路径
  */
 async function exportToFile(filePath) {
@@ -260,128 +260,148 @@ async function exportToFile(filePath) {
         console.error('不在Electron环境中，无法使用文件API');
         return;
     }
-    
+
     try {
-        const dataStr = JSON.stringify(words, null, 2);
-        const response = await window.electronAPI.writeFile(filePath, dataStr);
+        const dataToExport = JSON.stringify(words, null, 2); // 格式化JSON输出
+        const response = await window.electronAPI.writeFile(filePath, dataToExport);
         
         if (response.success) {
             window.utils.showAlert('数据导出成功！', 'success');
             // 通知主进程导出完成
-            if (window.electronAPI) {
-                window.electronAPI.exportComplete({ success: true });
+            if (window.electronAPI.exportComplete) { // 检查函数是否存在
+                 window.electronAPI.exportComplete({ success: true, path: filePath });
             }
         } else {
             console.error('写入文件失败:', response.error);
-            window.utils.showAlert('导出失败: ' + response.error, 'danger');
-            if (window.electronAPI) {
+            window.utils.showAlert('导出数据失败: ' + response.error, 'danger');
+            if (window.electronAPI.exportComplete) { // 检查函数是否存在
                 window.electronAPI.exportComplete({ success: false, error: response.error });
             }
         }
     } catch (error) {
-        console.error('导出文件出错:', error);
-        window.utils.showAlert('导出文件出错', 'danger');
-        if (window.electronAPI) {
-            window.electronAPI.exportComplete({ success: false, error: error.message });
+        console.error('导出数据时出错:', error);
+        window.utils.showAlert('导出数据时出错', 'danger');
+        if (window.electronAPI.exportComplete) { // 检查函数是否存在
+             window.electronAPI.exportComplete({ success: false, error: error.message });
         }
     }
 }
+
 
 /**
  * 更新统计信息
  */
 function updateStatistics() {
-    const totalWords = words.length;
-    const masteredWords = words.filter(word => word.mastered).length;
-    const remainingWords = totalWords - masteredWords;
-    const progressPercentage = totalWords > 0 ? Math.round((masteredWords / totalWords) * 100) : 0;
+    const masteredCount = words.filter(word => word.mastered).length;
+    const totalCount = words.length;
+    const remainingCount = totalCount - masteredCount;
+    const progress = totalCount > 0 ? (masteredCount / totalCount) * 100 : 0;
+
+    document.getElementById('stat-mastered').textContent = masteredCount;
+    document.getElementById('stat-remaining').textContent = remainingCount;
     
-    // 更新统计页面
-    const statMastered = document.getElementById('stat-mastered');
-    const statRemaining = document.getElementById('stat-remaining');
     const progressBar = document.getElementById('progress-bar');
-    
-    if (statMastered) statMastered.textContent = masteredWords;
-    if (statRemaining) statRemaining.textContent = remainingWords;
     if (progressBar) {
-        progressBar.style.width = `${progressPercentage}%`;
-        progressBar.textContent = `${progressPercentage}%`;
+        progressBar.style.width = `${progress}%`;
+        progressBar.textContent = `${Math.round(progress)}%`; // 显示百分比文字
     }
     
-    // 更新单词列表的计数
-    const wordCount = document.getElementById('word-count');
-    if (wordCount) {
-        wordCount.textContent = `${totalWords} 个单词`;
-    }
+    console.log(`统计信息已更新: ${masteredCount} 已掌握, ${remainingCount} 未掌握, ${totalCount} 总计`);
 }
 
-/**
- * 导出数据（浏览器环境）
- */
-function exportData() {
-    if (isElectron && window.electronAPI) {
-        // 在Electron环境中，使用主进程的导出功能
-        window.electronAPI.showExportDialog();
-        return;
-    }
-    
-    // 浏览器环境下的导出功能
-    const dataStr = JSON.stringify(words, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-    
-    const exportFileDefaultName = `词汇表_${new Date().toISOString().slice(0, 10)}.json`;
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.style.display = 'none';
-    
-    document.body.appendChild(linkElement);
-    linkElement.click();
-    document.body.removeChild(linkElement);
-    
-    window.utils.showAlert('数据导出成功！', 'success');
-}
 
-/**
- * 导入数据（浏览器环境）
- * @param {Event} event - 文件输入事件
- */
-function importData(event) {
-    if (isElectron && window.electronAPI) {
-        // 在Electron环境中，使用主进程的导入功能
-        window.electronAPI.showImportDialog();
-        return;
-    }
-    
-    // 浏览器环境下的导入功能
-    const file = event.target.files[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            processImportedData(e.target.result);
-        } catch (error) {
-            console.error('导入数据时出错:', error);
-            window.utils.showAlert('导入数据时出错，请检查文件格式', 'danger');
-        }
-    };
-    reader.readAsText(file);
-}
-
-// 导出函数供其他脚本使用
+// --- 全局可访问的函数 ---
 window.app = {
-    getWords: function() {
-        return words;
-    },
-    setWords: function(newWords) {
-        words = newWords;
-    },
+    getWords: () => words,
     saveWords,
     updateStatistics,
-    showAlert: window.utils ? window.utils.showAlert : function(){},
-    showConfirm: window.utils ? window.utils.showConfirm : function(){},
-    exportData,
-    importData
-}; 
+    showAlert: (message, type = 'info') => { // 默认类型为 info
+        if (window.utils && typeof window.utils.showAlert === 'function') {
+            window.utils.showAlert(message, type);
+        } else {
+            alert(message); // Fallback
+        }
+    },
+    // 暴露 Electron 相关的导入导出功能，供按钮调用
+    importData: (event) => { // 改为接收event参数
+        if (isElectron && window.electronAPI && window.electronAPI.triggerImport) {
+            window.electronAPI.triggerImport();
+        } else if (event && event.target && event.target.files && event.target.files[0]) { // 处理浏览器环境的文件输入
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                processImportedData(e.target.result);
+            };
+            reader.onerror = (e) => {
+                console.error("文件读取错误:", e);
+                window.app.showAlert('读取文件时出错', 'danger');
+            };
+            reader.readAsText(file);
+        } else {
+            console.warn('导入功能在此环境不可用或未选择文件');
+           // window.app.showAlert('导入功能不可用', 'warning');
+        }
+    },
+    exportData: () => {
+        if (isElectron && window.electronAPI && window.electronAPI.triggerExport) {
+            window.electronAPI.triggerExport(JSON.stringify(words, null, 2));
+        } else { // 浏览器环境下载
+            const filename = 'words_export.json';
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(words, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", filename);
+            document.body.appendChild(downloadAnchorNode); // required for firefox
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+            window.app.showAlert('数据已导出为 ' + filename, 'success');
+        }
+    },
+    loadWords: () => { // 将 loadWords 移至 window.app
+        const storedWords = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (storedWords) {
+            window.app.words = JSON.parse(storedWords);
+            console.log("从 localStorage 加载单词数据:", window.app.words);
+        } else {
+            // 如果本地存储中没有数据，则加载默认的示例单词
+            window.app.loadExampleWords();
+        }
+        // 确保在加载单词后渲染相关组件
+        if (typeof renderWordList === 'function') renderWordList(); // 配置页面列表
+        if (typeof renderWordWall === 'function') renderWordWall(); // 单词墙
+        if (typeof window.app.updateStatistics === 'function') window.app.updateStatistics(); // 统计数据
+    },
+    loadExampleWords: () => { // 将 loadExampleWords 移至 window.app
+        fetch('data/words.json') // <--- 修改后的路径
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                words = data;
+                saveWords();
+                if (typeof renderWordWall === 'function') {
+                    renderWordWall();
+                }
+                if (typeof renderWordList === 'function') {
+                    renderWordList();
+                }
+                console.log('加载了示例单词数据');
+            })
+            .catch(error => {
+                console.error('加载示例单词失败:', error);
+                window.app.showAlert('加载示例单词数据失败: ' + error.message, 'danger');
+            });
+    }
+};
+
+// 确保 renderWordWall 和 renderWordList 可在全局访问，如果它们是在其他文件中定义的
+// 如果它们在此文件定义，则无需额外操作
+if (typeof renderWordWall !== 'undefined') {
+    window.renderWordWall = renderWordWall;
+}
+if (typeof renderWordList !== 'undefined') {
+    window.renderWordList = renderWordList;
+} 

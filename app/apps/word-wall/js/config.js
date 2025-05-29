@@ -255,49 +255,37 @@ function renderWordList() {
         return;
     }
     
-    // 添加单词行
-    filteredWords.forEach((wordObj, filteredIndex) => {
-        // 找到原始索引，用于编辑和删除操作
-        const originalIndex = words.findIndex(w => w.word === wordObj.word && w.translation === wordObj.translation);
-        
+    // 创建并添加单词行
+    filteredWords.forEach((word, originalIndex) => { // 使用原始索引进行编辑/删除
+        const indexInFilteredArray = words.indexOf(word); // 获取在原始数组中的真实索引
+
         const row = document.createElement('tr');
-        row.className = wordObj.mastered ? 'table-light' : '';
+        // 根据掌握状态添加不同样式
+        if (word.mastered) {
+            row.classList.add('table-light', 'text-muted');
+        }
         
         row.innerHTML = `
-            <td>${wordObj.word}</td>
-            <td>${wordObj.translation}</td>
+            <td>${word.word}</td>
+            <td>${word.translation}</td>
             <td>
-                <div class="action-buttons">
-                    <button class="btn btn-sm btn-outline-primary me-1 edit-btn" data-index="${originalIndex}">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger delete-btn" data-index="${originalIndex}">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
+                <button class="btn btn-sm btn-outline-primary me-1" onclick="editWord(${indexInFilteredArray})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" onclick="deleteWord(${indexInFilteredArray})">
+                    <i class="fas fa-trash"></i>
+                </button>
             </td>
         `;
-        
-        // 添加编辑按钮事件
-        row.querySelector('.edit-btn').addEventListener('click', (event) => {
-            const index = parseInt(event.currentTarget.dataset.index);
-            editWord(index);
-        });
-        
-        // 添加删除按钮事件
-        row.querySelector('.delete-btn').addEventListener('click', (event) => {
-            const index = parseInt(event.currentTarget.dataset.index);
-            deleteWord(index);
-        });
-        
         wordList.appendChild(row);
     });
-    
-    // 如果有搜索关键词，更新显示的单词数量
-    if (searchKeyword) {
-        document.getElementById('word-count').textContent = `显示 ${filteredWords.length}/${words.length} 个单词`;
-    }
 }
 
-// 将renderWordList函数添加到window对象，供其他脚本调用
-window.renderWordList = renderWordList; 
+// 确保这些函数在全局可用，因为它们被内联 onclick 事件调用
+window.editWord = editWord;
+window.deleteWord = deleteWord;
+
+// 如果 renderWordList 需要被其他JS文件（如 index.js）调用，也需要挂载到window
+// window.renderWordList = renderWordList; 
+// (已在 index.js 中处理了 window.app.getWords 等的调用，
+// renderWordList 本身由 DOMContentLoaded 和其他事件在此文件内触发，或由 index.js 中的 loadWords 调用) 
