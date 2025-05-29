@@ -558,4 +558,22 @@
 #word-config .table .btn-outline-primary:hover,
 #word-config .table .btn-outline-danger:hover {
     color: #fff !important; /* 确保悬停时文字为白色 */
+}
+
+/* 单词墙页面深色主题 */
+#word-wall {
+    background-color: #161a25 !important;
+    color: #d0d8e0 !important;
+    padding-left: 60px !important; /* 为页面内容本身增加额外左内边距 - 与其他页面一致 */
+    padding-right: 20px !important; /* 增加右边距，使内容更居中 */
+    padding-top: 20px !important;   /* 增加顶部内边距 */
+    padding-bottom: 20px !important;/* 增加底部内边距 */
+    height: 100%; /* 确保占满父容器高度 */
+    overflow: hidden; /* 保持原有的overflow设置 */
+}
+
+/* 单词容器深色主题 */
+.word-container {
+    background-color: #161a25 !important; /* 与页面背景一致的深蓝灰色 */
+    /* 保留其他原有样式 */
 } 
