@@ -116,10 +116,10 @@ function renderWordWall() {
             colorRange = [6, 7, 8, 9, 1]; // 包含亮色和白色
         } else if (wordObj.word.length <= 6) {
             // 中等长度，使用中等亮度
-            colorRange = [1, 6, 7, 8, 2]; // 混合颜色
+            colorRange = [1, 6, 7, 8, 9]; // 全部使用亮色
         } else {
             // 长单词，使用柔和颜色
-            colorRange = [1, 2, 3, 4, 5]; // 白色到灰色
+            colorRange = [1, 3, 4, 5, 2]; // 使用较亮的柔和颜色
         }
         
         // 从颜色范围中随机选择
@@ -161,51 +161,35 @@ function renderWordWall() {
 
             console.log('点击单词:', words[index].word, 'Ctrl键按下:', event.ctrlKey, '原始掌握状态:', words[index].mastered);
 
-            // 定义 animationend 回调处理函数
-            const handleAnimationEnd = (isMastering) => {
-                const animationClassesToRemove = ['is-animating'];
-                if (isMastering) {
-                    animationClassesToRemove.push('mastering');
-                } else {
-                    animationClassesToRemove.push('unmastering');
-                }
-
-                // 移除动画完成事件监听器
-                // 注意：currentAnimationEndHandler 变量需要在外部作用域可访问，或者通过闭包传递
-                // 假设 currentTarget 和 currentAnimationEndHandler 是在此函数作用域内或闭包中正确定义的
-                currentTarget.removeEventListener('animationend', currentAnimationEndHandler);
-
-                if (isMastering) {
-                    // 先添加最终状态类
+            // 定义动画结束处理函数
+            const handleAnimationEnd = () => {
+                currentTarget.classList.remove('is-animating');
+                
+                if (currentTarget.classList.contains('mastering')) {
+                    currentTarget.classList.remove('mastering');
                     currentTarget.classList.add('mastered');
-                    
-                    // 延迟移除动画相关的类，给浏览器渲染 .mastered 类的机会
-                    requestAnimationFrame(() => {
-                        currentTarget.classList.remove(...animationClassesToRemove);
-                    });
-                } else {
-                    // 对于 unmastering，.mastered 类已在动画开始前移除
-                    // 直接移除动画类即可，因为 forwards 会保持动画的最终（正常）状态
-                    currentTarget.classList.remove(...animationClassesToRemove);
+                } else if (currentTarget.classList.contains('unmastering')) {
+                    currentTarget.classList.remove('unmastering');
                 }
+                
+                // 移除动画结束事件监听器
+                currentTarget.removeEventListener('animationend', handleAnimationEnd);
             };
-            
-            let currentAnimationEndHandler; // 用于保存当前注册的事件处理函数引用
 
             // Ctrl+左键点击: 切换到未掌握
             if (event.ctrlKey) {
                 if (words[index].mastered) {
-                    console.log('Ctrl+左键: 开始切换到 未掌握');
+                    console.log('Ctrl+左键: 切换到未掌握');
                     words[index].mastered = false;
                     window.app.saveWords();
                     window.app.updateStatistics();
 
-                    currentTarget.classList.remove('mastered'); // 先移除mastered，让动画从非掌握状态开始
-                    currentTarget.classList.add('is-animating');
-                    currentTarget.classList.add('unmastering');
-                    currentAnimationEndHandler = () => handleAnimationEnd(false);
-                    currentTarget.addEventListener('animationend', currentAnimationEndHandler, { once: true });
-                    console.log('添加 unmastering 和 is-animating 类');
+                    // 添加动画类
+                    currentTarget.classList.add('is-animating', 'unmastering');
+                    currentTarget.addEventListener('animationend', handleAnimationEnd);
+                    
+                    // 移除已掌握类，让动画从已掌握状态开始
+                    currentTarget.classList.remove('mastered');
                 } else {
                     console.log('Ctrl+左键: 已经是未掌握状态，无操作');
                 }
@@ -213,18 +197,17 @@ function renderWordWall() {
             // 普通左键点击: 切换到已掌握
             else {
                 if (!words[index].mastered) {
-                    console.log('左键: 开始切换到 已掌握');
+                    console.log('左键: 切换到已掌握');
                     words[index].mastered = true;
                     window.app.saveWords();
                     window.app.updateStatistics();
 
-                    // 如果之前有unmastering动画残留，先移除
-                    currentTarget.classList.remove('unmastering'); 
-                    currentTarget.classList.add('is-animating');
-                    currentTarget.classList.add('mastering');
-                    currentAnimationEndHandler = () => handleAnimationEnd(true);
-                    currentTarget.addEventListener('animationend', currentAnimationEndHandler, { once: true });
-                    console.log('添加 mastering 和 is-animating 类');
+                    // 添加动画类
+                    currentTarget.classList.add('is-animating', 'mastering');
+                    currentTarget.addEventListener('animationend', handleAnimationEnd);
+                    
+                    // 添加星星粒子效果
+                    createStarParticles(currentTarget);
                 } else {
                     console.log('左键: 已经是已掌握状态，无操作');
                 }
@@ -285,6 +268,47 @@ function renderWordWall() {
     }, 500); // 延迟执行，确保所有动画和初始渲染完成
 }
 
+/**
+ * 创建星星粒子效果
+ * @param {HTMLElement} element - 触发星星效果的元素
+ */
+function createStarParticles(element) {
+    const rect = element.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    // 创建5-8个星星
+    const starCount = Math.floor(Math.random() * 4) + 5;
+    
+    for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star-particle';
+        
+        // 随机位置在元素周围
+        const startX = Math.random() * 20 - 10;
+        const startY = Math.random() * 20 - 10;
+        
+        // 随机终点位置（向外扩散）
+        const endX = (Math.random() * 100 - 50);
+        const endY = (Math.random() * 100 - 50);
+        
+        // 设置初始位置
+        star.style.left = `${centerX + startX}px`;
+        star.style.top = `${centerY + startY}px`;
+        
+        // 设置自定义属性用于动画
+        star.style.setProperty('--star-x', `${endX}px`);
+        star.style.setProperty('--star-y', `${endY}px`);
+        
+        // 添加到body
+        document.body.appendChild(star);
+        
+        // 动画结束后移除
+        star.addEventListener('animationend', () => {
+            document.body.removeChild(star);
+        });
+    }
+}
 
 /**
  * 计算单词的自适应大小
@@ -328,38 +352,68 @@ function getRandomInt(min, max) {
  */
 function handleRightClick(event) {
     event.preventDefault(); // 阻止默认的浏览器右键菜单
-    
+
     const index = parseInt(event.currentTarget.dataset.index);
     const words = window.app.getWords();
     const wordObj = words[index];
-    
-    const tooltip = document.getElementById('word-tooltip');
-    const tooltipContent = tooltip.querySelector('.word-tooltip-content');
-    
-    // 设置提示框内容
-    tooltipContent.innerHTML = `<strong>${wordObj.word}</strong><hr class="my-1">${wordObj.translation}`;
-    
-    // 计算提示框位置
-    // 微调位置，使其出现在鼠标指针右下方
-    let x = event.clientX + 10;
-    let y = event.clientY + 10;
-    
-    // 确保提示框不会超出窗口边界
-    if (x + tooltip.offsetWidth > window.innerWidth) {
-        x = event.clientX - tooltip.offsetWidth - 10;
+
+    if (wordObj) {
+        const tooltip = document.getElementById('word-tooltip');
+        const tooltipContent = tooltip.querySelector('.word-tooltip-content');
+
+        if (!tooltip || !tooltipContent) {
+            console.error('Tooltip element or content not found!');
+            return;
+        }
+
+        tooltipContent.textContent = wordObj.translation;
+
+        // 根据鼠标位置定位提示框
+        // 考虑视口边界，避免提示框超出屏幕
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        // 获取 tooltip 尺寸前，先让它以某种方式可见（但不透明），以便浏览器计算其尺寸
+        // 否则 offsetWidth/offsetHeight 可能为0
+        tooltip.classList.add('visible'); // 临时添加以便获取尺寸，但它会因 opacity 0 保持不可见
+        tooltip.style.opacity = '0'; // 确保计算尺寸时不可见
+        
+        const tooltipWidth = tooltip.offsetWidth;
+        const tooltipHeight = tooltip.offsetHeight;
+
+        tooltip.style.opacity = ''; // 移除临时 opacity
+        // 如果之前没有 .visible 类，则移除，让后续的 add 生效并触发过渡
+        // 但由于我们就是要添加它，所以这一步可以省略，或者确保它在计算尺寸后确实被移除了，再重新添加以触发动画
+        // tooltip.classList.remove('visible');
+
+        let x = event.clientX + 10; // 默认在鼠标右侧
+        let y = event.clientY + 10; // 默认在鼠标下方
+
+        // 调整X位置，如果超出右边界
+        if (x + tooltipWidth > viewportWidth) {
+            x = event.clientX - tooltipWidth - 10; // 移到鼠标左侧
+        }
+        // 调整Y位置，如果超出下边界
+        if (y + tooltipHeight > viewportHeight) {
+            y = event.clientY - tooltipHeight - 10; // 移到鼠标上方
+        }
+        
+        // 确保不超出左边界或上边界
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+
+        tooltip.style.left = `${x}px`;
+        tooltip.style.top = `${y}px`;
+        // tooltip.style.display = 'block'; // 由 .visible 类处理
+        tooltip.classList.add('visible'); // 确保 .visible 类被添加以触发CSS中的显示和动画
+
+        // 添加点击外部隐藏提示框的事件监听
+        document.addEventListener('click', hideTooltip, { once: true });
+        // 添加Esc键隐藏提示框的事件监听
+        document.addEventListener('keydown', hideTooltipOnEsc, { once: true });
+
+    } else {
+        console.error('未找到单词对象，索引：', index);
     }
-    if (y + tooltip.offsetHeight > window.innerHeight) {
-        y = event.clientY - tooltip.offsetHeight - 10;
-    }
-    
-    tooltip.style.left = `${x}px`;
-    tooltip.style.top = `${y}px`;
-    tooltip.style.display = 'block';
-    
-    // 点击其他地方时隐藏提示框
-    document.addEventListener('click', hideTooltip, { once: true });
-    // 按ESC键隐藏提示框
-    document.addEventListener('keydown', hideTooltipOnEsc, { once: true });
 }
 
 /**
@@ -368,10 +422,11 @@ function handleRightClick(event) {
 function hideTooltip() {
     const tooltip = document.getElementById('word-tooltip');
     if (tooltip) {
-        tooltip.style.display = 'none';
+        // tooltip.style.display = 'none'; // 由 .visible 类控制
+        tooltip.classList.remove('visible');
+        // 移除ESC键监听，因为click外部也会触发隐藏
+        document.removeEventListener('keydown', hideTooltipOnEsc);
     }
-    // 确保移除ESC事件监听器，避免重复添加
-    document.removeEventListener('keydown', hideTooltipOnEsc);
 }
 
 /**
@@ -403,19 +458,87 @@ function initContextMenu() {
 }
 
 /**
+ * 显示自定义确认弹窗
+ * @param {string} message - 弹窗消息内容
+ * @param {string} title - 弹窗标题
+ * @param {Function} onConfirm - 确认按钮回调函数
+ * @param {string} type - 弹窗类型（'warning' 或 'danger'）
+ */
+function showCustomConfirm(message, title, onConfirm, type = 'warning') {
+    const modal = document.getElementById('customModal');
+    const modalTitle = document.getElementById('customModalTitle');
+    const modalContent = document.getElementById('customModalContent');
+    const confirmBtn = document.getElementById('customModalConfirmBtn');
+    const cancelBtn = document.getElementById('customModalCancelBtn');
+    const modalDialog = modal.querySelector('.custom-modal');
+
+    // 设置标题和内容
+    modalTitle.textContent = title;
+    modalContent.textContent = message;
+
+    // 根据类型设置样式
+    modalDialog.className = 'custom-modal ' + type;
+    if (type === 'danger') {
+        confirmBtn.className = 'custom-modal-btn custom-modal-btn-danger';
+    } else {
+        confirmBtn.className = 'custom-modal-btn custom-modal-btn-confirm';
+    }
+
+    // 显示弹窗
+    modal.classList.add('show');
+
+    // 绑定按钮事件
+    const handleConfirm = () => {
+        modal.classList.remove('show');
+        onConfirm();
+        cleanup();
+    };
+
+    const handleCancel = () => {
+        modal.classList.remove('show');
+        cleanup();
+    };
+
+    const handleOverlayClick = (event) => {
+        if (event.target === modal) {
+            handleCancel();
+        }
+    };
+
+    const handleEscape = (event) => {
+        if (event.key === 'Escape') {
+            handleCancel();
+        }
+    };
+
+    const cleanup = () => {
+        confirmBtn.removeEventListener('click', handleConfirm);
+        cancelBtn.removeEventListener('click', handleCancel);
+        modal.removeEventListener('click', handleOverlayClick);
+        document.removeEventListener('keydown', handleEscape);
+    };
+
+    // 添加事件监听
+    confirmBtn.addEventListener('click', handleConfirm);
+    cancelBtn.addEventListener('click', handleCancel);
+    modal.addEventListener('click', handleOverlayClick);
+    document.addEventListener('keydown', handleEscape);
+}
+
+/**
  * 重置所有单词的掌握状态为未掌握
  */
 function resetMasteredStatus() {
     const words = window.app.getWords();
-    
     if (words.length === 0) {
         window.app.showAlert('没有单词可重置', 'info');
         return;
     }
 
     // 显示确认对话框
-    window.utils.showConfirmModal(
-        '确定要重置所有单词的掌握状态吗？此操作会将所有单词标记为"未掌握"。',
+    showCustomConfirm(
+        '确定要将所有单词恢复为未掌握状态吗？',
+        '重置掌握状态',
         () => {
             let changed = false;
             words.forEach(word => {
@@ -429,12 +552,9 @@ function resetMasteredStatus() {
                 window.app.saveWords();
                 renderWordWall(); // 重新渲染单词墙以反映变化
                 window.app.updateStatistics(); // 更新统计数据
-                window.app.showAlert('所有单词的掌握状态已重置', 'success');
-            } else {
-                window.app.showAlert('所有单词已经是未掌握状态', 'info');
             }
         },
-        '确认重置掌握状态'
+        'warning'
     );
 }
 
@@ -450,8 +570,9 @@ function clearAllWords() {
     }
 
     // 显示确认对话框
-    window.utils.showConfirmModal(
+    showCustomConfirm(
         '确定要清空所有单词吗？此操作不可恢复。',
+        '清空所有单词',
         () => {
             words.length = 0; // 清空数组
             window.app.saveWords();
@@ -460,8 +581,7 @@ function clearAllWords() {
             window.app.updateStatistics();
             window.app.showAlert('所有单词已清空', 'success');
         },
-        '确认清空所有单词',
-        'danger' // 使用危险操作的按钮样式
+        'danger'
     );
 }
 

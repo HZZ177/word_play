@@ -576,4 +576,18 @@
 .word-container {
     background-color: #161a25 !important; /* 与页面背景一致的深蓝灰色 */
     /* 保留其他原有样式 */
-} 
+}
+
+/* 新增：确保单词列表操作列中的按钮水平排列 */
+#word-config .table tbody tr td:last-child {
+    display: flex;
+    align-items: center; /* 垂直居中按钮（如果按钮高度不一） */
+    /* gap: 0.25rem; */ /* 如果需要，可以用gap替代按钮上的me-1 */
+}
+
+/* 可选：如果按钮被拉伸，可以添加以下规则 */
+/*
+#word-config .table tbody tr td:last-child .btn {
+    flex-shrink: 0;
+}
+*/ 

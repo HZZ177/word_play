@@ -9,6 +9,7 @@
     <!-- 自定义样式 -->
     <link rel="stylesheet" href="../../css/styles.css">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/modal.css">
     <!-- Font Awesome 图标库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -222,20 +223,24 @@
     </div>
 
     <!-- 自定义确认弹窗 -->
-    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmModalLabel">确认操作</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
-                </div>
-                <div class="modal-body" id="confirmModalBody">
-                    确定要执行此操作吗？
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" id="confirmModalConfirmBtn">确定</button>
-                </div>
+    <div class="modal-overlay" id="customModal">
+        <div class="custom-modal">
+            <div class="custom-modal-title">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="customModalTitle">确认操作</span>
+            </div>
+            <div class="custom-modal-content" id="customModalContent">
+                确定要执行此操作吗？
+            </div>
+            <div class="custom-modal-buttons">
+                <button class="custom-modal-btn custom-modal-btn-cancel" id="customModalCancelBtn">
+                    <i class="fas fa-times"></i>
+                    取消
+                </button>
+                <button class="custom-modal-btn custom-modal-btn-confirm" id="customModalConfirmBtn">
+                    <i class="fas fa-check"></i>
+                    确定
+                </button>
             </div>
         </div>
     </div>
